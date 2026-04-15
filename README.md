@@ -64,3 +64,11 @@ Nodo 4 (Code): sustituir el token por el Bearer token del usuario admin, que se 
 }
 
 La convocatoria se guarda automáticamente con estado pendiente y el administrador la aprueba desde el panel de administración.
+
+## Repositorios relacionados
+
+- Frontend Angular: https://github.com/edurnemarco/pistalibre-frontend
+
+## Autor
+
+Edurne Marco — TFM Máster Universitario en Desarrollo de sitios y aplicaciones web, UOC 2026
