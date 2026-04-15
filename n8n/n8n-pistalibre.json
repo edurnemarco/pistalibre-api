@@ -1,0 +1,119 @@
+{
+    "name": "My workflow",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "importar-convocatoria",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [0, 0],
+            "id": "c0d6e146-2f1b-4ccb-b285-911a1e39abb2",
+            "name": "Webhook",
+            "webhookId": "deeb86a2-651c-4c78-a708-f272d98b355c"
+        },
+        {
+            "parameters": {
+                "url": "=https://r.jina.ai/{{ $('Webhook').item.json.body.url }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.4,
+            "position": [208, 0],
+            "id": "895a7599-88f8-4ebb-86fa-5a1b1aa14ffa",
+            "name": "HTTP Request"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.anthropic.com/v1/messages",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "x-api-key",
+                            "value": "sk-ant-TU_API_KEY"
+                        },
+                        {
+                            "name": "anthropic-version",
+                            "value": "2023-06-01"
+                        },
+                        {
+                            "name": "content-type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "contentType": "raw",
+                "rawContentType": "application/json",
+                "body": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 1024,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify(\"Eres un asistente especializado en extraer información de convocatorias artísticas. Extrae la información relevante y devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta, sin texto adicional, sin explicaciones y sin bloques de código markdown: {\\\"titulo\\\": \\\"Título\\\", \\\"descripcion\\\": \\\"Descripción breve (máximo 300 caracteres)\\\", \\\"tipo\\\": \\\"convocatoria|residencia|beca|concurso\\\", \\\"disciplinas\\\": [\\\"array\\\"], \\\"fecha_inicio\\\": \\\"YYYY-MM-DD o null\\\", \\\"fecha_limite\\\": \\\"YYYY-MM-DD\\\", \\\"dotacion\\\": null, \\\"ciudad\\\": \\\"ciudad\\\", \\\"region\\\": \\\"region\\\", \\\"pais\\\": \\\"ES\\\", \\\"url_original\\\": \\\"URL\\\"}\\n\\nTexto de la página:\\n\" + $json.data) }}\n    }\n  ]\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.4,
+            "position": [416, 0],
+            "id": "1ff8ab15-9bca-4b72-bb09-1c6c8f55d49c",
+            "name": "HTTP Request1"
+        },
+        {
+            "parameters": {
+                "jsCode": "const token = '5|sRV381YCf9C3PIzoQ1qqp2MKR3z1jaBkp1W1QRM2ee3a5baa';\nconst body = $input.first().json.content[0].text.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n\nconst response = await this.helpers.request({\n  method: 'POST',\n  url: 'http://127.0.0.1:8000/api/admin/scraping/importar',\n  headers: {\n    'Content-Type': 'application/json',\n    'Authorization': 'Bearer ' + token,\n    'Accept': 'application/json'\n  },\n  body: body\n});\n\nreturn [{ json: JSON.parse(response) }];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [624, 0],
+            "id": "4e4e592c-76c0-495a-b999-c757989cb81e",
+            "name": "Code in JavaScript"
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "HTTP Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request": {
+            "main": [
+                [
+                    {
+                        "node": "HTTP Request1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request1": {
+            "main": [
+                [
+                    {
+                        "node": "Code in JavaScript",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1",
+        "binaryMode": "separate"
+    },
+    "versionId": "1fb0a8f3-fdf1-4ff2-bbb3-2e281bcc2ae6",
+    "meta": {
+        "instanceId": "06cad67ee72611a9f072d4f71ebfebe0b0d0c2358ad743a71b89358047449e4c"
+    },
+    "id": "WCjXp3xryVVQFp1S",
+    "tags": []
+}
