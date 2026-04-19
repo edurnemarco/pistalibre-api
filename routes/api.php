@@ -16,6 +16,7 @@ Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
 Route::get('/convocatorias/{id}', [ConvocatoriaController::class, 'show']);
 Route::get('/instituciones', [InstitucionController::class, 'index']);
 Route::get('/instituciones/{id}', [InstitucionController::class, 'show']);
+Route::get('/usuarios/{id}', [AuthController::class, 'perfilPublico']);
 
 // Rutas protegidas (requieren login)
 Route::middleware('auth:sanctum')->group(function () {
@@ -23,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Autenticación
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/perfil', [AuthController::class, 'updatePerfil']);
 
     // Favoritos
     Route::get('/favoritos', [FavoritoController::class, 'index']);
@@ -33,7 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/alertas', [AlertaController::class, 'index']);
     Route::post('/alertas', [AlertaController::class, 'store']);
     Route::delete('/alertas/{id}', [AlertaController::class, 'destroy']);
-
+    Route::delete('/alertas/convocatoria/{convocatoriaId}', [AlertaController::class, 'destroyByConvocatoria']);
+    
     // Participaciones
     Route::get('/participaciones', [ParticipacionController::class, 'index']);
     Route::post('/participaciones', [ParticipacionController::class, 'store']);

@@ -41,4 +41,13 @@ class AlertaController extends Controller
 
         return response()->json(['message' => 'Alerta eliminada']);
     }
+
+    public function destroyByConvocatoria(Request $request, $convocatoriaId)
+{
+    Alerta::where('usuario_id', $request->user()->id)
+        ->where('convocatoria_id', $convocatoriaId)
+        ->delete();
+
+    return response()->json(['message' => 'Alertas eliminadas']);
+}
 }

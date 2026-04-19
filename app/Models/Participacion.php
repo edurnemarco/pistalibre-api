@@ -14,25 +14,18 @@ class Participacion extends Model
     protected $fillable = [
         'usuario_id',
         'convocatoria_id',
-        'resultado',
-        'nombre_proyecto',
-        'descripcion_proyecto',
-        'imagen_url',
-        'año',
+        'estado',
+        'notas',
+        'anio',
     ];
-
-    protected $casts = [
-        'año' => 'integer',
-    ];
-
-    // Relaciones
-    public function usuario()
-    {
-        return $this->belongsTo(User::class, 'usuario_id');
-    }
 
     public function convocatoria()
     {
-        return $this->belongsTo(Convocatoria::class, 'convocatoria_id');
+        return $this->belongsTo(Convocatoria::class);
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class);
     }
 }

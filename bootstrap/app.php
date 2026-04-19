@@ -11,11 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'es_admin' => \App\Http\Middleware\EsAdmin::class,
-        ]);
-    })
+   ->withMiddleware(function (Middleware $middleware): void {
+    $middleware->alias([
+        'es_admin' => \App\Http\Middleware\EsAdmin::class,
+    ]);
+    $middleware->redirectGuestsTo(fn() => response()->json(['message' => 'No autenticado'], 401));
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

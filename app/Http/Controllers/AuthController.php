@@ -85,4 +85,41 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    // PUT /api/perfil
+public function updatePerfil(Request $request)
+{
+    $user = $request->user();
+    $user->update($request->only([
+        'nombre',
+        'apellidos',
+        'bio',
+        'ciudad',
+        'region',
+        'pais',
+        'web',
+        'redes',
+        'avatar_url',
+        'disciplinas',
+    ]));
+    return response()->json($user);
+}
+
+// GET /api/usuarios/{id}
+public function perfilPublico($id)
+{
+    $user = User::findOrFail($id);
+    return response()->json([
+        'id' => $user->id,
+        'nombre' => $user->nombre,
+        'apellidos' => $user->apellidos,
+        'bio' => $user->bio,
+        'ciudad' => $user->ciudad,
+        'region' => $user->region,
+        'disciplinas' => $user->disciplinas,
+        'avatar_url' => $user->avatar_url,
+        'web' => $user->web,
+        'redes' => $user->redes,
+    ]);
+}
 }

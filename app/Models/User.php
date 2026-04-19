@@ -28,19 +28,20 @@ class User extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'nombre',
-        'apellidos',
-        'email',
-        'password',
-        'tipo',
-        'ciudad',
-        'region',
-        'pais',
-        'bio',
-        'avatar_url',
-        'web',
-        'redes',
-        'activo',
+         'nombre',
+    'apellidos',
+    'email',
+    'password',
+    'tipo',
+    'ciudad',
+    'region',
+    'pais',
+    'bio',
+    'activo',
+    'web',
+    'redes',
+    'avatar_url',
+    'disciplinas',
     ];
 
     protected $hidden = [
@@ -53,6 +54,7 @@ class User extends Authenticatable
         'password' => 'hashed',
         'redes' => 'array',
         'activo' => 'boolean',
+        'disciplinas'  => 'array',
     ];
 
     // Relaciones

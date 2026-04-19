@@ -18,15 +18,15 @@ class FavoritoController extends Controller
     }
 
     // POST /api/favoritos
-    public function store(Request $request)
-    {
-        $favorito = Favorito::create([
-            'usuario_id' => $request->user()->id,
-            'convocatoria_id' => $request->convocatoria_id,
-        ]);
+   public function store(Request $request)
+{
+    $favorito = Favorito::create([
+        'usuario_id' => $request->user()->id,
+        'convocatoria_id' => $request->convocatoria_id,
+    ]);
 
-        return response()->json($favorito, 201);
-    }
+    return response()->json($favorito->load('convocatoria'), 201);
+}
 
     // DELETE /api/favoritos/{id}
     public function destroy(Request $request, $id)
