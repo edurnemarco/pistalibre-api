@@ -14,10 +14,22 @@ class Participacion extends Model
     protected $fillable = [
         'usuario_id',
         'convocatoria_id',
-        'estado',
-        'notas',
-        'anio',
+        'convocatoria_nombre',
+        'institucion_nombre',
+        'resultado',
+        'lugar',
+        'nombre_proyecto',
+        'descripcion_proyecto',
+        'imagen_url',
+        'imagenes',
+        'enlaces',
+        'año',
     ];
+
+    protected $casts = [
+    'imagenes' => 'array',
+    'enlaces' => 'array',
+];
 
     public function convocatoria()
     {

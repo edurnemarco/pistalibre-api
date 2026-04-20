@@ -12,6 +12,7 @@ class ParticipacionController extends Controller
     {
         $participaciones = Participacion::with('convocatoria')
             ->where('usuario_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json($participaciones);
@@ -23,14 +24,19 @@ class ParticipacionController extends Controller
         $participacion = Participacion::create([
             'usuario_id' => $request->user()->id,
             'convocatoria_id' => $request->convocatoria_id,
-            'resultado' => $request->resultado ?? 'pendiente',
+            'convocatoria_nombre' => $request->convocatoria_nombre,
+            'institucion_nombre' => $request->institucion_nombre,
+            'lugar' => $request->lugar,
+            'resultado' => $request->resultado,
             'nombre_proyecto' => $request->nombre_proyecto,
             'descripcion_proyecto' => $request->descripcion_proyecto,
             'imagen_url' => $request->imagen_url,
+            'imagenes' => $request->imagenes,
+            'enlaces' => $request->enlaces,
             'año' => $request->año,
         ]);
 
-        return response()->json($participacion, 201);
+        return response()->json($participacion->load('convocatoria'), 201);
     }
 
     // PUT /api/participaciones/{id}
@@ -39,10 +45,21 @@ class ParticipacionController extends Controller
         $participacion = Participacion::where('id', $id)
             ->where('usuario_id', $request->user()->id)
             ->firstOrFail();
+        $participacion->update([
+            'institucion_nombre' => $request->institucion_nombre,
+            'convocatoria_id' => $request->convocatoria_id,
+            'convocatoria_nombre' => $request->convocatoria_nombre,
+            'lugar' => $request->lugar,
+            'resultado' => $request->resultado,
+            'nombre_proyecto' => $request->nombre_proyecto,
+            'descripcion_proyecto' => $request->descripcion_proyecto,
+            'imagen_url' => $request->imagen_url,
+            'imagenes' => $request->imagenes,
+            'enlaces' => $request->enlaces,
+            'año' => $request->input('año'),
+        ]);
 
-        $participacion->update($request->all());
-
-        return response()->json($participacion);
+        return response()->json($participacion->load('convocatoria'));
     }
 
     // DELETE /api/participaciones/{id}
