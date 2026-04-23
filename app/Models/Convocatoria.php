@@ -30,6 +30,7 @@ class Convocatoria extends Model
         'origen',
         'institucion_id',
         'fuente_id',
+        'institucion_nombre',
     ];
 
     protected $casts = [

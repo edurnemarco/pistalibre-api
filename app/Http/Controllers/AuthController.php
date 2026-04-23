@@ -32,6 +32,30 @@ class AuthController extends Controller
             'activo' => true,
         ]);
 
+        if ($request->tipo === 'institucion') {
+    $existente = \App\Models\Institucion::where('web', $request->web)
+        ->whereNull('usuario_id')
+        ->whereNotNull('web')
+        ->first();
+
+    if ($existente) {
+        $existente->update([
+            'usuario_id' => $user->id,
+            'origen'     => 'registro',
+        ]);
+    } else {
+        \App\Models\Institucion::create([
+            'usuario_id' => $user->id,
+            'nombre'     => $request->nombre,
+            'ciudad'     => $request->ciudad,
+            'region'     => $request->region,
+            'pais'       => $request->pais ?? 'ES',
+            'web'        => $request->web,
+            'origen'     => 'registro',
+        ]);
+    }
+}
+        
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -101,6 +125,7 @@ public function updatePerfil(Request $request)
         'redes',
         'avatar_url',
         'disciplinas',
+        'mostrar_email',
     ]));
     return response()->json($user);
 }
@@ -120,6 +145,7 @@ public function perfilPublico($id)
         'avatar_url' => $user->avatar_url,
         'web' => $user->web,
         'redes' => $user->redes,
+        'email' => $user->mostrar_email ? $user->email : null,
     ]);
 }
 }

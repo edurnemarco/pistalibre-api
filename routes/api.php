@@ -17,6 +17,9 @@ Route::get('/convocatorias/{id}', [ConvocatoriaController::class, 'show']);
 Route::get('/instituciones', [InstitucionController::class, 'index']);
 Route::get('/instituciones/{id}', [InstitucionController::class, 'show']);
 Route::get('/usuarios/{id}', [AuthController::class, 'perfilPublico']);
+Route::get('/convocatorias/{id}/participantes', [ConvocatoriaController::class, 'participantes']);
+Route::get('/usuarios/{id}/participaciones', [ParticipacionController::class, 'indexPublico']);
+Route::get('/convocatorias/{id}/detalle', [ConvocatoriaController::class, 'detalle']);
 
 // Rutas protegidas (requieren login)
 Route::middleware('auth:sanctum')->group(function () {
@@ -48,15 +51,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
     Route::put('/convocatorias/{id}', [ConvocatoriaController::class, 'update']);
     Route::delete('/convocatorias/{id}', [ConvocatoriaController::class, 'destroy']);
-
+    Route::get('/mi-institucion', [InstitucionController::class, 'miInstitucion']);
+    Route::put('/mi-institucion', [InstitucionController::class, 'updateMiInstitucion']);
+   
     // Admin
     Route::middleware('es_admin')->group(function () {
-        Route::get('/admin/pendientes', [AdminController::class, 'pendientes']);
-        Route::post('/admin/scraping/importar', [AdminController::class, 'importar']);
-        Route::put('/admin/convocatorias/{id}/aprobar', [AdminController::class, 'aprobar']);
-        Route::put('/admin/convocatorias/{id}/rechazar', [AdminController::class, 'rechazar']);
-        Route::post('/admin/convocatorias', [AdminController::class, 'store']);
-        Route::get('/admin/usuarios', [AdminController::class, 'usuarios']);
-        Route::put('/admin/usuarios/{id}/desactivar', [AdminController::class, 'desactivar']);
+    Route::get('/admin/pendientes', [AdminController::class, 'pendientes']);
+    Route::post('/admin/scraping/importar', [AdminController::class, 'importar']);
+    Route::put('/admin/convocatorias/{id}/aprobar', [AdminController::class, 'aprobar']);
+    Route::put('/admin/convocatorias/{id}/rechazar', [AdminController::class, 'rechazar']);
+    Route::post('/admin/convocatorias', [AdminController::class, 'store']);
+    Route::get('/admin/usuarios', [AdminController::class, 'usuarios']);
+    Route::put('/admin/usuarios/{id}/desactivar', [AdminController::class, 'desactivar']);
     });
 });

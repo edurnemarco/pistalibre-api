@@ -65,15 +65,59 @@ class AdminController extends Controller
     }
 
     // POST /api/admin/scraping/importar
-    public function importar(Request $request)
-    {
-        $convocatoria = Convocatoria::create(
-            array_merge($request->all(), [
-                'estado' => 'pendiente',
-                'origen' => 'scraping',
-            ])
-        );
+public function importar(Request $request)
+{
+    $data = $request->all();
 
-        return response()->json($convocatoria, 201);
+    // Normalizar tipo — minúsculas, sin tildes y singular
+    $tipoMap = [
+        'ayudas'        => 'ayuda',
+        'exposiciones'  => 'exposicion',
+        'residencias'   => 'residencia',
+        'becas'         => 'beca',
+        'concursos'     => 'concurso',
+        'convocatorias' => 'convocatoria',
+        'premios'       => 'premio',
+    ];
+
+    $tipoRaw = strtolower($data['tipo'] ?? 'convocatoria');
+    $tipoRaw = str_replace(
+        ['á','é','í','ó','ú','ü','ñ'],
+        ['a','e','i','o','u','u','n'],
+        $tipoRaw
+    );
+    $data['tipo'] = $tipoMap[$tipoRaw] ?? $tipoRaw;
+
+    // Crear o encontrar institución automáticamente
+    $institucionId = null;
+    if (!empty($data['institucion_nombre'])) {
+        $webBase = null;
+        if (!empty($data['url_original'])) {
+            $parsed = parse_url($data['url_original']);
+            $webBase = isset($parsed['scheme']) && isset($parsed['host'])
+                ? $parsed['scheme'] . '://' . $parsed['host']
+                : null;
+        }
+
+        $institucion = \App\Models\Institucion::firstOrCreate(
+            ['nombre' => $data['institucion_nombre']],
+            [
+                'web'        => $webBase,
+                'origen'     => 'scraping',
+                'verificada' => false,
+            ]
+        );
+        $institucionId = $institucion->id;
     }
+
+    $convocatoria = Convocatoria::create(
+        array_merge($data, [
+            'estado'         => 'pendiente',
+            'origen'         => 'scraping',
+            'institucion_id' => $institucionId,
+        ])
+    );
+
+    return response()->json($convocatoria, 201);
+}
 }

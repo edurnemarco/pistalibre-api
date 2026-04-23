@@ -22,6 +22,7 @@ class Institucion extends Model
         'web',
         'origen',
         'verificada',
+        'avatar_url',
     ];
 
     protected $casts = [

@@ -42,6 +42,7 @@ class User extends Authenticatable
     'redes',
     'avatar_url',
     'disciplinas',
+    'mostrar_email',
     ];
 
     protected $hidden = [

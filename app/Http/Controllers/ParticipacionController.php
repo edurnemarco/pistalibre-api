@@ -73,4 +73,14 @@ class ParticipacionController extends Controller
 
         return response()->json(['message' => 'Participación eliminada']);
     }
+
+    public function indexPublico($id)
+{
+    $participaciones = Participacion::with('convocatoria:id,titulo')
+        ->where('usuario_id', $id)
+        ->orderBy('año', 'desc')
+        ->get();
+
+    return response()->json($participaciones);
+}
 }

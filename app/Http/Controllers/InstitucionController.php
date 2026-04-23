@@ -27,4 +27,34 @@ class InstitucionController extends Controller
         $institucion->update($request->all());
         return response()->json($institucion);
     }
+
+    // GET /api/mi-institucion
+    public function miInstitucion(Request $request)
+    {
+        $institucion = Institucion::with('convocatorias')
+            ->where('usuario_id', $request->user()->id)
+            ->firstOrFail();
+
+        return response()->json($institucion);
+    }
+
+    // PUT /api/mi-institucion
+    public function updateMiInstitucion(Request $request)
+    {
+        $institucion = Institucion::where('usuario_id', $request->user()->id)
+            ->firstOrFail();
+
+        $institucion->update($request->only([
+            'nombre',
+            'descripcion',
+            'linea_curatorial',
+            'ciudad',
+            'region',
+            'pais',
+            'web',
+            'avatar_url',
+        ]));
+
+        return response()->json($institucion);
+    }
 }
